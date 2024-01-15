@@ -9,9 +9,7 @@ class LoginPage(BasePage):
         self.should_be_register_form()
 
     def should_be_login_url(self):
-        # реализуйте проверку на корректный url адрес
-        # находим кнопку Login и жмем на нее
-        self.browser.find_element(*MainPageLocators.LOGIN_LINK).click()
+        # реализуйте проверку на корректный url адрес        
         assert 'login' in self.browser.current_url, 'Bad URL'        
 
     def should_be_login_form(self):
