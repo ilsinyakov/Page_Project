@@ -14,4 +14,5 @@ class ProductPageLocators():
     BOOK_TITLE_IN_BASKET = (By.XPATH, '//*[@id="messages"]/div[1]/div/strong')
     BOOK_PRICE = (By.CSS_SELECTOR, '.product_main .price_color')
     BASKET_COST = (By.CSS_SELECTOR, '.alertinner p strong')
+    SUCCESS_MESSAGE = (By.XPATH, '//*[@id="messages"]/div[1]/div') # сообщение, подтверждающее добавление в корзину
         
