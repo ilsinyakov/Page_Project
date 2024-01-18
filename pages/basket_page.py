@@ -8,7 +8,6 @@ class BasketPage(BasePage):
         assert self.is_not_element_present(*BasketPageLocators.NOT_EMPTY_BASKET), "Basket is not empty"
     
     def should_be_text_empty_basket(self):
-        message_empty_basket = self.browser.find_element(*BasketPageLocators.EMPTY_BASKET) # ищем поле с текстом о пустой корзине
-        
+        message_empty_basket = self.browser.find_element(*BasketPageLocators.EMPTY_BASKET) # ищем поле с текстом о пустой корзине        
         assert 'Your basket is empty.' in message_empty_basket.text, "Text 'Your basket is empty.' is not present"
             

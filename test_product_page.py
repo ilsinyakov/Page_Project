@@ -1,10 +1,45 @@
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
+from .pages.main_page import MainPage
+from .pages.login_page import LoginPage
 import pytest
+import time
 
 
+class TestUserAddToBasketFromProductPage():
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/'
+        page = MainPage(browser, link)   # инициализируем Page Object, передаем в конструктор экземпляр драйвера и url адрес 
+        page.open()                      # открываем страницу
+        page.go_to_login_page()          # открываем страницу с регистрацией
+        login_page = LoginPage(browser, browser.current_url) # создаем экземпляр класса LoginPage
+        email = str(time.time()) + "@fakemail.org"
+        password = '1a2fg34-_S'
+        login_page.register_new_user(email, password)   # регистрируем нового юзера
+        login_page.should_be_authorized_user() # проверяем регистрацию юзера
+        
+    def test_user_can_add_product_to_basket(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207' # ссылка без промо
+        #    link = 'http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear' # ссылка с промо (!включить квиз)
+        page = ProductPage(browser, link) # создаем объект класса ProductPage
+        page.open() # открываем страницу по ссылке
+        page.should_be_add_to_basket_button() # проверяем наличие кнопки "Добавить в корзину"
+        page.add_product_to_basket() # проверяем добавление товара в корзину
+        #    page.solve_quiz_and_get_code() # решаем квиз
+        page.should_be_product_in_basket() # проверяем, та ли книга у нас в корзине
+        page.should_be_basket_cost_same_product_price() # проверяем, совпадает ли стоимость корзины с ценой книги   
+    
+    def test_user_cant_see_success_message(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207' # ссылка без промо
+        page = ProductPage(browser, link) # создаем объект класса ProductPage
+        page.open() # открываем страницу по ссылке
+        page.should_not_be_success_message() # проверяем отсутствие сообщения
+
+
+'''
 # параметризация (!передать link в функцию)                                 
-'''@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
+@pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
@@ -13,7 +48,8 @@ import pytest
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
                                   pytest.param("http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7", marks=pytest.mark.xfail),
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
-                                  "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9"])'''
+                                  "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9"])
+'''
 
 @pytest.mark.skip(reason="no way of currently testing this") # пропускаем тест
 def test_guest_can_add_product_to_basket(browser): # <- вставить link в атрибуты при включении параметризации!
